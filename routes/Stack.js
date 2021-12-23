@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator } from "@react-navigation/stack";
+import {createStackNavigator} from "@react-navigation/stack";
 
 import Login from "../screens/Login";
 import QR from "../screens/QR";
@@ -7,7 +7,7 @@ import Worker from "../screens/Worker";
 
 const Stack = createStackNavigator();
 
-export default function HomeStack({ navigation }) {
+export default function HomeStack({navigation}) {
     return (
         <Stack.Navigator>
             <Stack.Screen
@@ -28,7 +28,7 @@ export default function HomeStack({ navigation }) {
                 name={'Worker'}
                 component={Worker}
                 options={{
-                    title: 'Инофмация о сотруднике',
+                    title: 'Информация о сотруднике',
                 }}
             />
         </Stack.Navigator>

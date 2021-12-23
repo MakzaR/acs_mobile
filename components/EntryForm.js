@@ -58,12 +58,12 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     button: {
-        width: "64%",
         height: 48,
         backgroundColor: "#637CFF",
         alignSelf: "center",
         alignItems: "center",
         justifyContent: "center",
+        paddingHorizontal: 50,
         marginTop: 20,
     },
     buttonText: {
