@@ -33,7 +33,7 @@ export default function Worker({navigation}) {
     const [entryModalOpen, setEntryModalOpen] = useState(false)
 
     return (
-        <View>
+        <View style={styles.content}>
             <View>
                 <Text>Иванов Иван Иванович</Text>
                 <Text>Должность: <Text>Грузчик</Text></Text>
@@ -53,14 +53,13 @@ export default function Worker({navigation}) {
 
             <Modal visible={penaltyModalOpen} animationType='slide'>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View>
+                    <View style={styles.modalContent}>
                         <MaterialIcons
                             name='close'
                             size={24}
                             onPress={() => setPenaltyModalOpen(false)}
                         />
                         <PenaltyForm/>
-                        {/*<TodoForm addTodo={addTodo}/>*/}
                     </View>
                 </TouchableWithoutFeedback>
             </Modal>
@@ -76,14 +75,13 @@ export default function Worker({navigation}) {
 
             <Modal visible={entryModalOpen} animationType='slide'>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View>
+                    <View style={styles.modalContent}>
                         <MaterialIcons
                             name='close'
                             size={24}
                             onPress={() => setEntryModalOpen(false)}
                         />
                         <EntryForm/>
-                        {/*<TodoForm addTodo={addTodo}/>*/}
                     </View>
                 </TouchableWithoutFeedback>
             </Modal>
@@ -100,5 +98,17 @@ export default function Worker({navigation}) {
     );
 }
 
-const styles = StyleSheet.create({}
-);
+const styles = StyleSheet.create({
+    content: {
+        flex: 1,
+        padding: 20
+    },
+    modalContent: {
+        flex: 1,
+        padding: 20
+    },
+    modalClose: {
+        marginLeft: 370,
+        marginBottom: 20
+    }
+});

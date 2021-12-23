@@ -33,4 +33,4 @@ export default function HomeStack({ navigation }) {
             />
         </Stack.Navigator>
     );
-}
+};

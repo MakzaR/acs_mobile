@@ -35,7 +35,7 @@ export default function Login({navigation}) {
                             />
 
                             <Pressable style={styles.button} onPress={() => navigation.navigate('QR')}>
-                                <Text style={styles.text}>Войти</Text>
+                                <Text style={styles.buttonText}>Войти</Text>
                             </Pressable>
                         </View>
                     )}
@@ -81,8 +81,8 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         marginTop: 20,
     },
-    text: {
+    buttonText: {
         fontSize: 16,
         color: "white",
     }
-})
+});

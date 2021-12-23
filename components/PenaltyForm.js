@@ -2,8 +2,6 @@ import React, {useState} from 'react';
 import {View, StyleSheet, Text, Pressable, FlatList} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 
-const Item = Picker.Item;
-
 export default function PenaltyForm() {
     const objects = [
         {objectName: 'Площадка 1', key: '1'},
@@ -23,7 +21,8 @@ export default function PenaltyForm() {
 
     const renderPenaltyList = () => {
         return penalties.map((penalty) => {
-            return <Picker.Item label={penalty.penaltyType} value={penalty.key} key={penalty.key}/>
+            return <Picker.Item label={penalty.penaltyType} value={penalty.key}
+                                key={penalty.key}/>
         })
     }
 
@@ -32,30 +31,67 @@ export default function PenaltyForm() {
 
     return (
         <View>
-            <Text>
+            <Text style={styles.formText}>
                 Добавление нарушения
             </Text>
-            <Text>Место нарушения</Text>
-            <Picker
-                selectedValue={selectedObject}
-                onValueChange={(itemValue) =>
-                    setSelectedObject(itemValue)
-                }>
-                {renderObjectList()}
-            </Picker>
-            <Text>Нарушение</Text>
-            <Picker
-                selectedValue={selectedPenalty}
-                onValueChange={(itemValue) =>
-                    setSelectedPenalty(itemValue)
-                }>
-                {renderPenaltyList()}
-            </Picker>
-            <Pressable>
-                <Text>+ Добавить</Text>
+            <Text style={styles.inputLabel}>Место нарушения</Text>
+            <View style={styles.input}>
+                <Picker
+                    selectedValue={selectedObject}
+                    onValueChange={(itemValue) =>
+                        setSelectedObject(itemValue)
+                    }>
+                    {renderObjectList()}
+                </Picker>
+            </View>
+            <Text style={styles.inputLabel}>Нарушение</Text>
+            <View style={styles.input}>
+                <Picker
+                    style={{borderWidth: 1}}
+                    selectedValue={selectedPenalty}
+                    onValueChange={(itemValue) =>
+                        setSelectedPenalty(itemValue)
+                    }>
+                    {renderPenaltyList()}
+                </Picker>
+            </View>
+            <Pressable style={styles.button}>
+                <Text style={styles.buttonText}>+ Добавить</Text>
             </Pressable>
         </View>
     )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    formText: {
+        fontSize: 24,
+        fontWeight: "bold",
+        alignSelf: "center",
+        marginBottom: 14,
+    },
+    inputLabel: {
+        fontSize: 18,
+        marginBottom: 10,
+        marginTop: 10,
+    },
+    input: {
+        fontSize: 16,
+        borderWidth: 1,
+        borderColor: '#AFAFAF',
+        paddingLeft: 20,
+        marginBottom: 16,
+    },
+    button: {
+        width: "64%",
+        height: 48,
+        backgroundColor: "#637CFF",
+        alignSelf: "center",
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 20,
+    },
+    buttonText: {
+        fontSize: 16,
+        color: "white",
+    }
+});
