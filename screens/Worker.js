@@ -1,8 +1,21 @@
 import React, {useState} from 'react';
-import {StyleSheet, View, Text, Button, FlatList, Pressable} from 'react-native';
+import {
+    StyleSheet,
+    View,
+    Text,
+    FlatList,
+    Pressable,
+    Modal,
+    TouchableWithoutFeedback,
+    Keyboard
+} from 'react-native';
+
+import {MaterialIcons} from "@expo/vector-icons";
 
 import Access from "../components/Access";
 import Penalty from "../components/Penalty";
+import PenaltyForm from "../components/PenaltyForm";
+import EntryForm from "../components/EntryForm";
 
 export default function Worker({navigation}) {
 
@@ -15,6 +28,9 @@ export default function Worker({navigation}) {
         {objectOfWork: 'Площадка 1', penaltyType: 'Превышение скоростного лимита', key: '1'},
         {objectOfWork: 'Площадка 1', penaltyType: 'Курение в неположенном месте', key: '2'},
     ])
+
+    const [penaltyModalOpen, setPenaltyModalOpen] = useState(false)
+    const [entryModalOpen, setEntryModalOpen] = useState(false)
 
     return (
         <View>
@@ -35,17 +51,45 @@ export default function Worker({navigation}) {
                 <FlatList data={accesses} renderItem={({item}) => (<Access item={item}/>)}/>
             </View>
 
+            <Modal visible={penaltyModalOpen} animationType='slide'>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View>
+                        <MaterialIcons
+                            name='close'
+                            size={24}
+                            onPress={() => setPenaltyModalOpen(false)}
+                        />
+                        <PenaltyForm/>
+                        {/*<TodoForm addTodo={addTodo}/>*/}
+                    </View>
+                </TouchableWithoutFeedback>
+            </Modal>
+
             <View>
                 <Text>Нарушения</Text>
                 <Text>Баллы за нарушения: <Text>12</Text></Text>
                 <FlatList data={penalties} renderItem={({item}) => (<Penalty item={item}/>)}/>
-                <Pressable>
+                <Pressable onPress={() => setPenaltyModalOpen(true)}>
                     <Text>+ Добавить нарушение</Text>
                 </Pressable>
             </View>
 
+            <Modal visible={entryModalOpen} animationType='slide'>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View>
+                        <MaterialIcons
+                            name='close'
+                            size={24}
+                            onPress={() => setEntryModalOpen(false)}
+                        />
+                        <EntryForm/>
+                        {/*<TodoForm addTodo={addTodo}/>*/}
+                    </View>
+                </TouchableWithoutFeedback>
+            </Modal>
+
             <View>
-                <Pressable>
+                <Pressable onPress={() => setEntryModalOpen(true)}>
                     <Text>Одобрить</Text>
                 </Pressable>
                 <Pressable>

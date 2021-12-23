@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, TextInput, View, StyleSheet, Text, Pressable, TouchableWithoutFeedback, Keyboard} from 'react-native';
+import {TextInput, View, StyleSheet, Text, Pressable, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import {Formik} from 'formik';
 
 export default function Login({navigation}) {
@@ -37,11 +37,6 @@ export default function Login({navigation}) {
                             <Pressable style={styles.button} onPress={() => navigation.navigate('QR')}>
                                 <Text style={styles.text}>Войти</Text>
                             </Pressable>
-                            {/*<Button*/}
-                            {/*    style={styles.button}*/}
-                            {/*    onPress={() => navigation.navigate('QR')}*/}
-                            {/*    title="Войти"*/}
-                            {/*/>*/}
                         </View>
                     )}
                 </Formik>
