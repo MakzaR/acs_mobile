@@ -57,7 +57,7 @@ export default function Worker({navigation}) {
 
                 <View>
                     <Text style={styles.heading}>Доступ к объектам</Text>
-                    <FlatList data={accesses} renderItem={({item}) => (<Access item={item}/>)}/>
+                    <FlatList horizontal data={accesses} renderItem={({item}) => (<Access item={item}/>)}/>
                 </View>
 
                 <Modal visible={penaltyModalOpen} animationType='slide'>
@@ -75,11 +75,13 @@ export default function Worker({navigation}) {
 
                 <View>
                     <Text style={styles.heading}>Нарушения</Text>
-                    <Text style={styles.penaltyInfo}>Баллы за нарушения: <Text
-                        style={styles.penaltyNumber}>12</Text></Text>
-                    <Text style={styles.penaltyInfo}>Общее кол-во нарушений: <Text
-                        style={styles.penaltyNumber}>{penalties.length}</Text></Text>
-                    <FlatList data={penalties} renderItem={({item}) => (<Penalty item={item}/>)}/>
+                    <Text style={styles.penaltyInfo}>Баллы за нарушения:
+                        <Text style={styles.penaltyNumber}> 12</Text>
+                    </Text>
+                    <Text style={styles.penaltyInfo}>Общее кол-во нарушений:
+                        <Text style={styles.penaltyNumber}> {penalties.length}</Text>
+                    </Text>
+                    <FlatList horizontal data={penalties} renderItem={({item}) => (<Penalty item={item}/>)}/>
                     <Pressable onPress={() => setPenaltyModalOpen(true)}>
                         <Text style={styles.buttonPenaltyText}>+ Добавить нарушение</Text>
                     </Pressable>
@@ -124,38 +126,41 @@ const styles = StyleSheet.create({
     },
     scrollView: {
         backgroundColor: '#F5F5F5',
-        padding: 20,
+        // padding: 20,
         paddingTop: 0
     },
     workerName: {
         fontSize: 24,
         fontWeight: "bold",
+        paddingLeft: 20,
         marginTop: 16
     },
     heading: {
         fontSize: 20,
         fontWeight: "bold",
+        paddingLeft: 20,
         marginTop: 20
     },
     text: {
         fontSize: 16,
-        fontWeight: "bold",
+        // fontWeight: "bold",
         marginTop: 5,
         marginBottom: 5
     },
     infoText: {
         fontSize: 16,
         color: "#454545",
-        fontWeight: "normal",
+        fontWeight: "bold",
     },
     infoBlock: {
-        backgroundColor: "white",
-        paddingVertical: 10,
+        // backgroundColor: "white",
+        paddingBottom: 10,
         paddingLeft: 20,
         marginTop: 10,
     },
     penaltyInfo: {
-        fontSize: 14,
+        fontSize: 16,
+        paddingLeft: 20,
         marginVertical: 5
     },
     penaltyNumber: {
@@ -170,6 +175,7 @@ const styles = StyleSheet.create({
         paddingBottom: 20
     },
     buttonPenaltyText: {
+        paddingLeft: 20,
         paddingVertical: 20,
         fontSize: 16,
         fontWeight: "bold",
