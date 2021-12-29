@@ -21,7 +21,8 @@ export default function HomeStack({navigation}) {
                 name={'QR'}
                 component={QR}
                 options={{
-                    headerShown: false
+                    headerShown: false,
+                    unmountOnBlur: true
                 }}
             />
             <Stack.Screen
