@@ -1,45 +1,41 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {TextInput, View, StyleSheet, Text, Pressable, TouchableWithoutFeedback, Keyboard} from 'react-native';
-import {Formik} from 'formik';
+import {useAuth} from "../contexts/AuthContext";
 
 export default function Login({navigation}) {
+    const {login} = useAuth();
+
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    async function handleLogin() {
+        await login(username, password);
+    }
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.content}>
-                <Formik
-                    initialValues={{
-                        login: '',
-                        password: ''
-                    }}
-                    onSubmit={(values, actions) => {
-                        actions.resetForm();
-                    }}
-                >
-                    {({handleChange, handleBlur, handleSubmit, values}) => (
-                        <View style={styles.formContent}>
-                            <Text style={styles.formText}>
-                                Вход в систему
-                            </Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder='Логин'
-                                onChangeText={handleChange('login')}
-                                value={values.login}
-                            />
-                            <TextInput
-                                style={styles.input}
-                                placeholder='Пароль'
-                                onChangeText={handleChange('password')}
-                                value={values.password}
-                                secureTextEntry
-                            />
-
-                            <Pressable style={styles.button} onPress={() => navigation.navigate('QR')}>
-                                <Text style={styles.buttonText}>Войти</Text>
-                            </Pressable>
-                        </View>
-                    )}
-                </Formik>
+                <View style={styles.formContent}>
+                    <Text style={styles.formText}>
+                        Вход в систему
+                    </Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder='Логин'
+                        onChangeText={setUsername}
+                        value={username}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder='Пароль'
+                        onChangeText={setPassword}
+                        value={password}
+                        secureTextEntry
+                    />
+                    <Pressable style={styles.button} onPress={handleLogin}>
+                        <Text style={styles.buttonText}>Войти</Text>
+                    </Pressable>
+                </View>
             </View>
         </TouchableWithoutFeedback>
     )

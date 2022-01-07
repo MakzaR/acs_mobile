@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Text, Button} from 'react-native';
-import { BarCodeScanner } from 'expo-barcode-scanner';
+import {BarCodeScanner} from 'expo-barcode-scanner';
 
 export default function QR({navigation}) {
     const [hasPermission, setHasPermission] = useState(null);
@@ -8,14 +8,14 @@ export default function QR({navigation}) {
 
     useEffect(() => {
         (async () => {
-            const { status } = await BarCodeScanner.requestPermissionsAsync();
+            const {status} = await BarCodeScanner.requestPermissionsAsync();
             setHasPermission(status === 'granted');
         })();
     }, []);
 
-    const handleBarCodeScanned = ({ type, data }) => {
+    const handleBarCodeScanned = ({data}) => {
         setScanned(true);
-        alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+        alert(`ID рабочего ${data}`);
         navigation.push("Worker")
     };
 
@@ -32,7 +32,7 @@ export default function QR({navigation}) {
                 onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
                 style={StyleSheet.absoluteFillObject}
             />
-            {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />}
+            {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)}/>}
         </View>
     );
 }

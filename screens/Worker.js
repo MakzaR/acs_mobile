@@ -17,8 +17,10 @@ import Penalty from "../components/Penalty";
 import PenaltyForm from "../components/PenaltyForm";
 import EntryForm from "../components/EntryForm";
 import {StatusBar} from "expo-status-bar";
+import {useAuth} from "../contexts/AuthContext";
 
 export default function Worker({navigation}) {
+    const {userToken, logout} = useAuth();
 
     const [accesses, setAccesses] = useState([
         {objectOfWork: 'Площадка 1', timeFrom: '08.05.2020', timeTo: '09.05.2020', key: '1'},
@@ -39,6 +41,15 @@ export default function Worker({navigation}) {
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollView}>
+
+                <Text>{userToken}</Text>
+
+                <Pressable
+                    style={styles.buttonDeny}
+                    onPress={logout}
+                >
+                    <Text style={styles.buttonText}>Выйти</Text>
+                </Pressable>
 
                 <View>
                     <Text style={styles.workerName}>Иванов Иван Иванович</Text>
