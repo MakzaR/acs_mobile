@@ -19,10 +19,10 @@ import Penalty from "../components/Penalty";
 import PenaltyForm from "../components/PenaltyForm";
 import EntryForm from "../components/EntryForm";
 
+const API_URL = 'http://45.144.64.103:81';
+
 export default function Worker({route}) {
     const {workerId} = route.params;
-
-    const [isLoading, setLoading] = useState(true);
 
     const [accesses, setAccesses] = useState([
         {objectOfWork: 'Площадка 1', timeFrom: '08.05.2020', timeTo: '09.05.2020', key: '1'},
@@ -40,18 +40,14 @@ export default function Worker({route}) {
     const [penaltyModalOpen, setPenaltyModalOpen] = useState(false)
     const [entryModalOpen, setEntryModalOpen] = useState(false)
 
+    const [isLoading, setLoading] = useState(true);
     const [workerData, setWorkerData] = useState({})
 
     const getWorkerInfo = async (workerId) => {
-        try {
-            const response = await fetch('http://45.144.64.103:81/api/workers/' + `${workerId}`);
-            const json = await response.json();
-            setWorkerData(json);
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
+        const response = await fetch(API_URL + '/api/workers/' + `${workerId}`);
+        const json = await response.json();
+        setWorkerData(json);
+        setLoading(false);
     }
 
     useEffect(() => {
@@ -63,17 +59,6 @@ export default function Worker({route}) {
             {isLoading ? <ActivityIndicator style={styles.activityIndicator} size="large" color="#8497FF"/> : (
                 <>
                     <ScrollView style={styles.scrollView}>
-
-                        {/*<Text>{userToken}</Text>*/}
-                        {/*<Text>workerId: {JSON.stringify(workerId)}</Text>*/}
-
-                        {/*<Pressable*/}
-                        {/*    style={styles.buttonDeny}*/}
-                        {/*    onPress={logout}*/}
-                        {/*>*/}
-                        {/*    <Text style={styles.buttonText}>Выйти</Text>*/}
-                        {/*</Pressable>*/}
-
                         <View>
                             <Text
                                 style={styles.workerName}>{workerData.last_name} {workerData.first_name} {workerData.patronymic}</Text>
