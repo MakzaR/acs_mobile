@@ -16,8 +16,8 @@ export default function QR({navigation}) {
     }, []);
 
     const handleBarCodeScanned = ({data}) => {
-        alert(`ID рабочего ${data}`);
-        navigation.push("Worker");
+        // alert(`ID рабочего ${data}`);
+        navigation.navigate("Worker", {workerId: data});
     };
 
     if (hasPermission === null) {

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     StyleSheet,
     View,
@@ -7,21 +7,22 @@ import {
     Pressable,
     Modal,
     TouchableWithoutFeedback,
-    Keyboard, SafeAreaView, ScrollView
+    Keyboard, SafeAreaView, ScrollView, ActivityIndicator
 } from 'react-native';
 
 import {MaterialIcons} from "@expo/vector-icons";
 
 import {StatusBar} from "expo-status-bar";
-import {useAuth} from "../contexts/AuthContext";
 
 import Access from "../components/Access";
 import Penalty from "../components/Penalty";
 import PenaltyForm from "../components/PenaltyForm";
 import EntryForm from "../components/EntryForm";
 
-export default function Worker({navigation}) {
-    const {userToken, logout} = useAuth();
+export default function Worker({route}) {
+    const {workerId} = route.params;
+
+    const [isLoading, setLoading] = useState(true);
 
     const [accesses, setAccesses] = useState([
         {objectOfWork: 'Площадка 1', timeFrom: '08.05.2020', timeTo: '09.05.2020', key: '1'},
@@ -39,94 +40,117 @@ export default function Worker({navigation}) {
     const [penaltyModalOpen, setPenaltyModalOpen] = useState(false)
     const [entryModalOpen, setEntryModalOpen] = useState(false)
 
+    const [workerData, setWorkerData] = useState({})
+
+    const getWorkerInfo = async (workerId) => {
+        try {
+            const response = await fetch('http://45.144.64.103:81/api/workers/' + `${workerId}`);
+            const json = await response.json();
+            setWorkerData(json);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        getWorkerInfo(workerId);
+    }, []);
+
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView style={styles.scrollView}>
+            {isLoading ? <ActivityIndicator style={styles.activityIndicator} size="large" color="#8497FF"/> : (
+                <>
+                    <ScrollView style={styles.scrollView}>
 
-                <Text>{userToken}</Text>
+                        {/*<Text>{userToken}</Text>*/}
+                        {/*<Text>workerId: {JSON.stringify(workerId)}</Text>*/}
 
-                <Pressable
-                    style={styles.buttonDeny}
-                    onPress={logout}
-                >
-                    <Text style={styles.buttonText}>Выйти</Text>
-                </Pressable>
+                        {/*<Pressable*/}
+                        {/*    style={styles.buttonDeny}*/}
+                        {/*    onPress={logout}*/}
+                        {/*>*/}
+                        {/*    <Text style={styles.buttonText}>Выйти</Text>*/}
+                        {/*</Pressable>*/}
 
-                <View>
-                    <Text style={styles.workerName}>Иванов Иван Иванович</Text>
-                    <View style={styles.infoBlock}>
-                        <Text style={styles.text}>Должность: <Text style={styles.infoText}>Грузчик</Text></Text>
-                        <Text style={styles.text}>Дата рождения: <Text
-                            style={styles.infoText}>11.11.1987</Text></Text>
-                        <Text style={styles.text}>Статус: <Text style={styles.infoText}>Не на объекте</Text></Text>
+                        <View>
+                            <Text
+                                style={styles.workerName}>{workerData.last_name} {workerData.first_name} {workerData.patronymic}</Text>
+                            <View style={styles.infoBlock}>
+                                <Text style={styles.text}>Должность: <Text
+                                    style={styles.infoText}>{workerData.position}</Text></Text>
+                                <Text style={styles.text}>Дата рождения: <Text
+                                    style={styles.infoText}>{workerData.date_of_birth}</Text></Text>
+                                <Text style={styles.text}>Статус:
+                                    {workerData.on_object == null ? (
+                                        <Text style={styles.infoText}> Не на объекте</Text>) : (
+                                        <Text style={styles.infoText}> workerData.on_object</Text>
+                                    )}
+                                </Text>
+                            </View>
+                        </View>
+
+                        <View>
+                            <Text style={styles.heading}>Доступ к объектам</Text>
+                            <FlatList horizontal data={accesses} renderItem={({item}) => (<Access item={item}/>)}/>
+                        </View>
+
+                        <Modal visible={penaltyModalOpen} animationType='slide'>
+                            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                                <View style={styles.modalContent}>
+                                    <MaterialIcons
+                                        name='close'
+                                        size={24}
+                                        onPress={() => setPenaltyModalOpen(false)}
+                                    />
+                                    <PenaltyForm/>
+                                </View>
+                            </TouchableWithoutFeedback>
+                        </Modal>
+
+                        <View>
+                            <Text style={styles.heading}>Нарушения</Text>
+                            <Text style={styles.penaltyInfo}>Баллы за нарушения:
+                                <Text style={styles.penaltyNumber}> 12</Text>
+                            </Text>
+                            <Text style={styles.penaltyInfo}>Общее кол-во нарушений:
+                                <Text style={styles.penaltyNumber}> {penalties.length}</Text>
+                            </Text>
+                            <FlatList horizontal data={penalties} renderItem={({item}) => (<Penalty item={item}/>)}/>
+                            <Pressable onPress={() => setPenaltyModalOpen(true)}>
+                                <Text style={styles.buttonPenaltyText}>+ Добавить нарушение</Text>
+                            </Pressable>
+                        </View>
+
+                        <Modal visible={entryModalOpen} animationType='slide'>
+                            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                                <View style={styles.modalContent}>
+                                    <MaterialIcons
+                                        name='close'
+                                        size={24}
+                                        onPress={() => setEntryModalOpen(false)}
+                                    />
+                                    <EntryForm/>
+                                </View>
+                            </TouchableWithoutFeedback>
+                        </Modal>
+
+                    </ScrollView>
+                    <View style={styles.buttonBlock}>
+                        <Pressable
+                            style={styles.buttonAllow}
+                            onPress={() => setEntryModalOpen(true)}
+                        >
+                            <Text style={styles.buttonText}>Одобрить</Text>
+                        </Pressable>
+                        <Pressable
+                            style={styles.buttonDeny}
+                        >
+                            <Text style={styles.buttonText}>Отклонить</Text>
+                        </Pressable>
                     </View>
-                </View>
-
-                {/*<View>*/}
-                {/*    <Text style={styles.heading}>Документы</Text>*/}
-                {/*    <Text>Удостоверение личности</Text>*/}
-                {/*</View>*/}
-
-                <View>
-                    <Text style={styles.heading}>Доступ к объектам</Text>
-                    <FlatList horizontal data={accesses} renderItem={({item}) => (<Access item={item}/>)}/>
-                </View>
-
-                <Modal visible={penaltyModalOpen} animationType='slide'>
-                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                        <View style={styles.modalContent}>
-                            <MaterialIcons
-                                name='close'
-                                size={24}
-                                onPress={() => setPenaltyModalOpen(false)}
-                            />
-                            <PenaltyForm/>
-                        </View>
-                    </TouchableWithoutFeedback>
-                </Modal>
-
-                <View>
-                    <Text style={styles.heading}>Нарушения</Text>
-                    <Text style={styles.penaltyInfo}>Баллы за нарушения:
-                        <Text style={styles.penaltyNumber}> 12</Text>
-                    </Text>
-                    <Text style={styles.penaltyInfo}>Общее кол-во нарушений:
-                        <Text style={styles.penaltyNumber}> {penalties.length}</Text>
-                    </Text>
-                    <FlatList horizontal data={penalties} renderItem={({item}) => (<Penalty item={item}/>)}/>
-                    <Pressable onPress={() => setPenaltyModalOpen(true)}>
-                        <Text style={styles.buttonPenaltyText}>+ Добавить нарушение</Text>
-                    </Pressable>
-                </View>
-
-                <Modal visible={entryModalOpen} animationType='slide'>
-                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                        <View style={styles.modalContent}>
-                            <MaterialIcons
-                                name='close'
-                                size={24}
-                                onPress={() => setEntryModalOpen(false)}
-                            />
-                            <EntryForm/>
-                        </View>
-                    </TouchableWithoutFeedback>
-                </Modal>
-
-            </ScrollView>
-
-            <View style={styles.buttonBlock}>
-                <Pressable
-                    style={styles.buttonAllow}
-                    onPress={() => setEntryModalOpen(true)}
-                >
-                    <Text style={styles.buttonText}>Одобрить</Text>
-                </Pressable>
-                <Pressable
-                    style={styles.buttonDeny}
-                >
-                    <Text style={styles.buttonText}>Отклонить</Text>
-                </Pressable>
-            </View>
+                </>)}
         </SafeAreaView>
     );
 }
@@ -222,5 +246,9 @@ const styles = StyleSheet.create({
     modalClose: {
         marginLeft: 370,
         marginBottom: 20
+    },
+    activityIndicator: {
+        flex: 1,
+        justifyContent: 'center',
     }
 });
