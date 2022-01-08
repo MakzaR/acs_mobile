@@ -1,33 +1,45 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text, Pressable, FlatList} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 
-export default function PenaltyForm() {
-    const objects = [
-        {objectName: 'Площадка 1', key: '1'},
-        {objectName: 'Площадка 2', key: '2'},
-    ];
+const API_URL = 'http://45.144.64.103:81';
 
-    const penalties = [
-        {penaltyType: 'Превышение скоростного лимита', key: '1'},
-        {penaltyType: 'Курение в неположенном месте', key: '2'},
-    ];
+export default function PenaltyForm() {
+    const [objectsOfWork, setObjectsOfWork] = useState([]);
+    const [penalties, setPenalties] = useState([]);
+
+    const [selectedObject, setSelectedObject] = useState();
+    const [selectedPenalty, setSelectedPenalty] = useState();
+
+    const getPenalties = async () => {
+        const response = await fetch(API_URL + '/api/penalties/types');
+        const penalties = await response.json();
+        setPenalties(penalties);
+    }
+
+    const getObjectsOfWork = async () => {
+        const response = await fetch(API_URL + '/api/objects_of_work/');
+        const objectsOfWork = await response.json();
+        setObjectsOfWork(objectsOfWork);
+    }
+
+    useEffect(() => {
+        getPenalties();
+        getObjectsOfWork();
+    }, []);
 
     const renderObjectList = () => {
-        return objects.map((object) => {
-            return <Picker.Item label={object.objectName} value={object.key} key={object.key}/>
+        return Array.from(objectsOfWork).map((object) => {
+            return <Picker.Item label={object.name} value={object.name} key={object.name}/>
         })
     }
 
     const renderPenaltyList = () => {
-        return penalties.map((penalty) => {
-            return <Picker.Item label={penalty.penaltyType} value={penalty.key}
-                                key={penalty.key}/>
+        return Array.from(penalties).map((penalty) => {
+            return <Picker.Item label={penalty.name} value={penalty.value}
+                                key={penalty.value}/>
         })
     }
-
-    const [selectedObject, setSelectedObject] = useState();
-    const [selectedPenalty, setSelectedPenalty] = useState();
 
     return (
         <View>

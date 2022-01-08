@@ -43,15 +43,15 @@ export default function Worker({route}) {
     const [isLoading, setLoading] = useState(true);
     const [workerData, setWorkerData] = useState({})
 
-    const getWorkerInfo = async (workerId) => {
+    const getWorkerData = async (workerId) => {
         const response = await fetch(API_URL + '/api/workers/' + `${workerId}`);
-        const json = await response.json();
-        setWorkerData(json);
+        const workerData = await response.json();
+        setWorkerData(workerData);
         setLoading(false);
     }
 
     useEffect(() => {
-        getWorkerInfo(workerId);
+        getWorkerData(workerId);
     }, []);
 
     return (

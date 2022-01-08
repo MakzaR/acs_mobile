@@ -1,20 +1,29 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text, Pressable} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 
-export default function EntryForm() {
-    const objects = [
-        {objectName: 'Площадка 1', key: '1'},
-        {objectName: 'Площадка 2', key: '2'},
-    ];
+const API_URL = 'http://45.144.64.103:81';
 
-    const renderObjectList = () => {
-        return objects.map((object) => {
-            return <Picker.Item label={object.objectName} value={object.key} key={object.key}/>
-        })
-    }
+export default function EntryForm() {
+    const [objectsOfWork, setObjectsOfWork] = useState([]);
 
     const [selectedObject, setSelectedObject] = useState();
+
+    const getObjectsOfWork = async () => {
+        const response = await fetch(API_URL + '/api/objects_of_work/');
+        const objectsOfWork = await response.json();
+        setObjectsOfWork(objectsOfWork);
+    }
+
+    useEffect(() => {
+        getObjectsOfWork();
+    }, []);
+
+    const renderObjectList = () => {
+        return Array.from(objectsOfWork).map((object) => {
+            return <Picker.Item label={object.name} value={object.name} key={object.name}/>
+        })
+    }
 
     return (
         <View>
