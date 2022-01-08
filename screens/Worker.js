@@ -12,12 +12,13 @@ import {
 
 import {MaterialIcons} from "@expo/vector-icons";
 
+import {StatusBar} from "expo-status-bar";
+import {useAuth} from "../contexts/AuthContext";
+
 import Access from "../components/Access";
 import Penalty from "../components/Penalty";
 import PenaltyForm from "../components/PenaltyForm";
 import EntryForm from "../components/EntryForm";
-import {StatusBar} from "expo-status-bar";
-import {useAuth} from "../contexts/AuthContext";
 
 export default function Worker({navigation}) {
     const {userToken, logout} = useAuth();

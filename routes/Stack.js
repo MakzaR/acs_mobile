@@ -9,7 +9,7 @@ import Worker from "../screens/Worker";
 
 const Stack = createStackNavigator();
 
-export default function HomeStack({navigation}) {
+export default function HomeStack() {
     const {userToken} = useAuth();
 
     return (
@@ -23,14 +23,15 @@ export default function HomeStack({navigation}) {
                     }}
                 />
             ) : (
-                    // <Stack.Screen
-                    //     name={'QR'}
-                    //     component={QR}
-                    //     options={{
-                    //         headerShown: false,
-                    //         unmountOnBlur: true
-                    //     }}
-                    // />
+                <>
+                    <Stack.Screen
+                        name={'QR'}
+                        component={QR}
+                        options={{
+                            headerShown: false,
+                            unmountOnBlur: true
+                        }}
+                    />
                     <Stack.Screen
                         name={'Worker'}
                         component={Worker}
@@ -38,6 +39,7 @@ export default function HomeStack({navigation}) {
                             title: 'Информация о сотруднике',
                         }}
                     />
+                </>
             )}
         </Stack.Navigator>
     );
