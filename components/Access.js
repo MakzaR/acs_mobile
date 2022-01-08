@@ -4,8 +4,8 @@ import {StyleSheet, Text, View} from 'react-native';
 export default function Access({item}) {
     return (
         <View style={styles.infoBlock}>
-            <Text style={styles.infoText}>{item.objectOfWork}</Text>
-            <Text style={styles.infoText}>{item.timeFrom} - {item.timeTo}</Text>
+            <Text style={styles.infoText}>{item.object_of_work}</Text>
+            <Text style={styles.infoText}>{item.time_from} - {item.time_to}</Text>
         </View>
     );
 }

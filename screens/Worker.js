@@ -24,24 +24,25 @@ const API_URL = 'http://45.144.64.103:81';
 export default function Worker({route}) {
     const {workerId} = route.params;
 
-    const [accesses, setAccesses] = useState([
-        {objectOfWork: 'Площадка 1', timeFrom: '08.05.2020', timeTo: '09.05.2020', key: '1'},
-        {objectOfWork: 'Площадка 2', timeFrom: '09.06.2020', timeTo: '09.08.2020', key: '2'},
-        {objectOfWork: 'Площадка 2', timeFrom: '09.06.2020', timeTo: '09.08.2020', key: '3'},
-        {objectOfWork: 'Площадка 2', timeFrom: '09.06.2020', timeTo: '09.08.2020', key: '4'},
-        {objectOfWork: 'Площадка 2', timeFrom: '09.06.2020', timeTo: '09.08.2020', key: '5'},
-    ]);
-
-    const [penalties, setPenalties] = useState([
-        {objectOfWork: 'Площадка 1', penaltyType: 'Превышение скоростного лимита', key: '1'},
-        {objectOfWork: 'Площадка 1', penaltyType: 'Курение в неположенном месте', key: '2'},
-    ])
+    // const [accesses, setAccesses] = useState([
+    //     {objectOfWork: 'Площадка 1', timeFrom: '08.05.2020', timeTo: '09.05.2020', key: '1'},
+    //     {objectOfWork: 'Площадка 2', timeFrom: '09.06.2020', timeTo: '09.08.2020', key: '2'},
+    //     {objectOfWork: 'Площадка 2', timeFrom: '09.06.2020', timeTo: '09.08.2020', key: '3'},
+    //     {objectOfWork: 'Площадка 2', timeFrom: '09.06.2020', timeTo: '09.08.2020', key: '4'},
+    //     {objectOfWork: 'Площадка 2', timeFrom: '09.06.2020', timeTo: '09.08.2020', key: '5'},
+    // ]);
+    //
+    // const [penalties, setPenalties] = useState([
+    //     {objectOfWork: 'Площадка 1', penaltyType: 'Превышение скоростного лимита', key: '1'},
+    //     {objectOfWork: 'Площадка 1', penaltyType: 'Курение в неположенном месте', key: '2'},
+    // ])
 
     const [penaltyModalOpen, setPenaltyModalOpen] = useState(false)
     const [entryModalOpen, setEntryModalOpen] = useState(false)
 
     const [isLoading, setLoading] = useState(true);
-    const [workerData, setWorkerData] = useState({})
+    const [workerData, setWorkerData] = useState({});
+    const [maxPenaltiesSum, setMaxPenaltiesSum] = useState({});
 
     const getWorkerData = async (workerId) => {
         const response = await fetch(API_URL + '/api/workers/' + `${workerId}`);
@@ -50,8 +51,15 @@ export default function Worker({route}) {
         setLoading(false);
     }
 
+    const getMaxPenaltiesSum = async () => {
+        const response = await fetch(API_URL + '/api/penalties/max_penalties_sum');
+        const sum = await response.json();
+        setMaxPenaltiesSum(sum);
+    }
+
     useEffect(() => {
         getWorkerData(workerId);
+        getMaxPenaltiesSum();
     }, []);
 
     return (
@@ -60,13 +68,16 @@ export default function Worker({route}) {
                 <>
                     <ScrollView style={styles.scrollView}>
                         <View>
-                            <Text
-                                style={styles.workerName}>{workerData.last_name} {workerData.first_name} {workerData.patronymic}</Text>
+                            <Text style={styles.workerName}>
+                                {workerData.last_name} {workerData.first_name} {workerData.patronymic}
+                            </Text>
                             <View style={styles.infoBlock}>
-                                <Text style={styles.text}>Должность: <Text
-                                    style={styles.infoText}>{workerData.position}</Text></Text>
-                                <Text style={styles.text}>Дата рождения: <Text
-                                    style={styles.infoText}>{workerData.date_of_birth}</Text></Text>
+                                <Text style={styles.text}>Должность:
+                                    <Text style={styles.infoText}> {workerData.position}</Text>
+                                </Text>
+                                <Text style={styles.text}>Дата рождения:
+                                    <Text style={styles.infoText}> {workerData.date_of_birth}</Text>
+                                </Text>
                                 <Text style={styles.text}>Статус:
                                     {workerData.on_object == null ? (
                                         <Text style={styles.infoText}> Не на объекте</Text>) : (
@@ -78,7 +89,13 @@ export default function Worker({route}) {
 
                         <View>
                             <Text style={styles.heading}>Доступ к объектам</Text>
-                            <FlatList horizontal data={accesses} renderItem={({item}) => (<Access item={item}/>)}/>
+                            {workerData.accesses.length < 1 ?
+                                (<Text style={styles.penaltyInfo}>Нет активных доступов</Text>) :
+                                (<FlatList horizontal
+                                           data={workerData.accesses}
+                                           renderItem={({item}) => (<Access item={item}/>)}
+                                />)
+                            }
                         </View>
 
                         <Modal visible={penaltyModalOpen} animationType='slide'>
@@ -96,13 +113,21 @@ export default function Worker({route}) {
 
                         <View>
                             <Text style={styles.heading}>Нарушения</Text>
-                            <Text style={styles.penaltyInfo}>Баллы за нарушения:
-                                <Text style={styles.penaltyNumber}> 12</Text>
-                            </Text>
-                            <Text style={styles.penaltyInfo}>Общее кол-во нарушений:
-                                <Text style={styles.penaltyNumber}> {penalties.length}</Text>
-                            </Text>
-                            <FlatList horizontal data={penalties} renderItem={({item}) => (<Penalty item={item}/>)}/>
+                            {workerData.penalties.length < 1 ?
+                                (<Text style={styles.penaltyInfo}>Нет нарушений</Text>) :
+                                (<>
+                                    <Text style={styles.penaltyInfo}>Баллы за нарушения:
+                                        <Text
+                                            style={styles.penaltyNumber}> {workerData.penalties_sum} из {maxPenaltiesSum.max_penalties_sum}
+                                        </Text>
+                                    </Text>
+                                    <Text style={styles.penaltyInfo}>Общее кол-во нарушений:
+                                        <Text style={styles.penaltyNumber}> {workerData.penalties.length}</Text>
+                                    </Text>
+                                    <FlatList horizontal data={workerData.penalties}
+                                              renderItem={({item}) => (<Penalty item={item}/>)}/>
+                                </>)
+                            }
                             <Pressable onPress={() => setPenaltyModalOpen(true)}>
                                 <Text style={styles.buttonPenaltyText}>+ Добавить нарушение</Text>
                             </Pressable>

@@ -4,8 +4,8 @@ import {StyleSheet, Text, View} from 'react-native';
 export default function Penalty({item}) {
     return (
         <View style={styles.infoBlock}>
-            <Text style={styles.infoText}>{item.penaltyType}</Text>
-            <Text style={styles.infoText}>{item.objectOfWork}</Text>
+            <Text style={styles.infoText}>{item.penalty_type_name}</Text>
+            <Text style={styles.infoText}>{item.object_of_work_name}</Text>
         </View>
     );
 }
