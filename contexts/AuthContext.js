@@ -24,12 +24,16 @@ function Auth() {
         };
 
         const response = await fetch(API_URL + '/api/auth/', postConfig);
-        const userToken = await response.text();
 
         if (!response.ok) {
-            return { error: userToken.error }
+            const details = await response.json();
+            alert(`${details.detail}`);
+            // throw new Error(details.detail);
+            // return response;
+            return response;
         }
 
+        const userToken = await response.text();
         setUserToken(userToken);
         await SecureStore.setItemAsync('userToken', userToken);
     }

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {TextInput, View, StyleSheet, Text, Pressable, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import {useAuth} from "../contexts/AuthContext";
 
-export default function Login({navigation}) {
+export default function Login() {
     const {login} = useAuth();
 
     const [username, setUsername] = useState('');
@@ -24,12 +24,14 @@ export default function Login({navigation}) {
                         placeholder='Логин'
                         onChangeText={setUsername}
                         value={username}
+                        autoCapitalize='none'
                     />
                     <TextInput
                         style={styles.input}
                         placeholder='Пароль'
                         onChangeText={setPassword}
                         value={password}
+                        autoCapitalize='none'
                         secureTextEntry
                     />
                     <Pressable style={styles.button} onPress={handleLogin}>
