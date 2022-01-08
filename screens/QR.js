@@ -1,8 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Text, Button} from 'react-native';
 import {BarCodeScanner} from 'expo-barcode-scanner';
+import {useIsFocused} from '@react-navigation/native';
 
 export default function QR({navigation}) {
+    const isFocused = useIsFocused();
+
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
 
@@ -28,10 +31,11 @@ export default function QR({navigation}) {
 
     return (
         <View style={styles.container}>
+            {isFocused &&
             <BarCodeScanner
                 onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
                 style={StyleSheet.absoluteFillObject}
-            />
+            />}
             {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)}/>}
         </View>
     );
