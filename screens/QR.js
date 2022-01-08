@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, Text, Button} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import {BarCodeScanner} from 'expo-barcode-scanner';
 import {useIsFocused} from '@react-navigation/native';
 
@@ -7,7 +7,6 @@ export default function QR({navigation}) {
     const isFocused = useIsFocused();
 
     const [hasPermission, setHasPermission] = useState(null);
-    const [scanned, setScanned] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -17,9 +16,8 @@ export default function QR({navigation}) {
     }, []);
 
     const handleBarCodeScanned = ({data}) => {
-        setScanned(true);
         alert(`ID рабочего ${data}`);
-        navigation.push("Worker")
+        navigation.push("Worker");
     };
 
     if (hasPermission === null) {
@@ -33,10 +31,10 @@ export default function QR({navigation}) {
         <View style={styles.container}>
             {isFocused &&
             <BarCodeScanner
-                onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-                style={StyleSheet.absoluteFillObject}
+                onBarCodeScanned={handleBarCodeScanned}
+                style={[StyleSheet.absoluteFillObject, styles.container]}
+                barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
             />}
-            {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)}/>}
         </View>
     );
 }
@@ -44,7 +42,8 @@ export default function QR({navigation}) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'column',
+        alignItems: 'center',
         justifyContent: 'center',
-    },
+        backgroundColor: 'black'
+    }
 });
