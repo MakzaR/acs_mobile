@@ -36,17 +36,12 @@ export default function Worker({route}) {
     //     {objectOfWork: 'Площадка 1', penaltyType: 'Превышение скоростного лимита', key: '1'},
     //     {objectOfWork: 'Площадка 1', penaltyType: 'Курение в неположенном месте', key: '2'},
     // ])
-
-    const [penaltyModalOpen, setPenaltyModalOpen] = useState(false)
-    const [entryModalOpen, setEntryModalOpen] = useState(false)
-
-    const closeEntryModal = () => {
-        setEntryModalOpen(false)
-    }
-
     const [isLoading, setLoading] = useState(true);
     const [workerData, setWorkerData] = useState({});
     const [maxPenaltiesSum, setMaxPenaltiesSum] = useState({});
+
+    const [penaltyModalOpen, setPenaltyModalOpen] = useState(false)
+    const [entryModalOpen, setEntryModalOpen] = useState(false)
 
     const getWorkerData = async (workerId) => {
         const response = await fetch(API_URL + '/api/workers/' + `${workerId}`);
@@ -64,7 +59,31 @@ export default function Worker({route}) {
     useEffect(() => {
         getWorkerData(workerId);
         getMaxPenaltiesSum();
-    }, []);
+    }, [workerData]);
+
+    const closeEntryModal = () => {
+        setEntryModalOpen(false)
+    }
+
+    const handleExit = async (workerId) => {
+        const data = {worker_id: workerId}
+
+        const postConfig = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+
+        const response = await fetch(API_URL + '/api/entry_control/exit', postConfig);
+
+        if (!response.ok) {
+            const details = await response.json();
+            alert(`${details.error}`);
+            return response;
+        }
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -174,6 +193,7 @@ export default function Worker({route}) {
                         </Pressable>
                         <Pressable
                             style={styles.buttonDeny}
+                            onPress={() => handleExit(workerData.id)}
                         >
                             <Text style={styles.buttonText}>Отклонить</Text>
                         </Pressable>

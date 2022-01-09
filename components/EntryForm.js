@@ -25,8 +25,6 @@ export default function EntryForm({workerId, closeModal}) {
         if (!response.ok) {
             const details = await response.json();
             alert(`${details.error}`);
-            // throw new Error(details.detail);
-            // return response;
             return response;
         }
 
