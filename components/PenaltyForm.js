@@ -4,12 +4,34 @@ import {Picker} from '@react-native-picker/picker';
 
 const API_URL = 'http://45.144.64.103:81';
 
-export default function PenaltyForm() {
+export default function PenaltyForm({workerId, closeModal}) {
     const [objectsOfWork, setObjectsOfWork] = useState([]);
     const [penalties, setPenalties] = useState([]);
 
     const [selectedObject, setSelectedObject] = useState();
     const [selectedPenalty, setSelectedPenalty] = useState();
+
+    async function handlePenalty(workerId, objectOfWork, penaltyTypeName) {
+        const data = {worker_id: workerId, object_of_work_name: objectOfWork, penalty_type_name: penaltyTypeName}
+
+        const postConfig = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+
+        const response = await fetch(API_URL + '/api/penalties/', postConfig);
+
+        if (!response.ok) {
+            const details = await response.json();
+            alert(`${details.error}`);
+            return response;
+        }
+
+        closeModal();
+    }
 
     const getPenalties = async () => {
         const response = await fetch(API_URL + '/api/penalties/types');
@@ -36,7 +58,7 @@ export default function PenaltyForm() {
 
     const renderPenaltyList = () => {
         return Array.from(penalties).map((penalty) => {
-            return <Picker.Item label={penalty.name} value={penalty.value}
+            return <Picker.Item label={penalty.name} value={penalty.name}
                                 key={penalty.value}/>
         })
     }
@@ -67,7 +89,7 @@ export default function PenaltyForm() {
                     {renderPenaltyList()}
                 </Picker>
             </View>
-            <Pressable style={styles.button}>
+            <Pressable style={styles.button} onPress={() => handlePenalty(workerId, selectedObject, selectedPenalty)}>
                 <Text style={styles.buttonText}>+ Добавить</Text>
             </Pressable>
         </View>

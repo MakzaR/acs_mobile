@@ -61,9 +61,9 @@ export default function Worker({route}) {
         getMaxPenaltiesSum();
     }, [workerData]);
 
-    const closeEntryModal = () => {
-        setEntryModalOpen(false)
-    }
+    // const closeEntryModal = () => {
+    //     setEntryModalOpen(false)
+    // }
 
     const handleExit = async (workerId) => {
         const data = {worker_id: workerId}
@@ -143,7 +143,7 @@ export default function Worker({route}) {
                                         size={24}
                                         onPress={() => setPenaltyModalOpen(false)}
                                     />
-                                    <PenaltyForm/>
+                                    <PenaltyForm workerId={workerData.id} closeModal={() => setPenaltyModalOpen(false)}/>
                                 </View>
                             </TouchableWithoutFeedback>
                         </Modal>
@@ -178,7 +178,7 @@ export default function Worker({route}) {
                                         size={24}
                                         onPress={() => setEntryModalOpen(false)}
                                     />
-                                    <EntryForm workerId={workerData.id} closeModal={closeEntryModal} />
+                                    <EntryForm workerId={workerData.id} closeModal={() => setEntryModalOpen(false)} />
                                 </View>
                             </TouchableWithoutFeedback>
                         </Modal>
