@@ -2,10 +2,16 @@ import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
 export default function Access({item}) {
+    const convertTimestampToDate = (timestamp) => {
+        const milliseconds = timestamp * 1000;
+        const dateObject = new Date(milliseconds);
+        return (`${dateObject.toLocaleDateString()} ${dateObject.toLocaleTimeString()}`);
+    }
+
     return (
         <View style={styles.infoBlock}>
             <Text style={styles.infoText}>{item.object_of_work}</Text>
-            <Text style={styles.infoText}>{item.time_from} - {item.time_to}</Text>
+            <Text style={styles.infoText}>{convertTimestampToDate(item.time_from)} - {convertTimestampToDate(item.time_to)}</Text>
         </View>
     );
 }

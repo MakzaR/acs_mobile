@@ -36,6 +36,7 @@ export default function Worker({route}) {
     //     {objectOfWork: 'Площадка 1', penaltyType: 'Превышение скоростного лимита', key: '1'},
     //     {objectOfWork: 'Площадка 1', penaltyType: 'Курение в неположенном месте', key: '2'},
     // ])
+
     const [isLoading, setLoading] = useState(true);
     const [workerData, setWorkerData] = useState({});
     const [maxPenaltiesSum, setMaxPenaltiesSum] = useState({});
@@ -61,10 +62,6 @@ export default function Worker({route}) {
         getMaxPenaltiesSum();
     }, [workerData]);
 
-    // const closeEntryModal = () => {
-    //     setEntryModalOpen(false)
-    // }
-
     const handleExit = async (workerId) => {
         const data = {worker_id: workerId}
 
@@ -85,6 +82,17 @@ export default function Worker({route}) {
         }
     }
 
+    const convertTimestampToDate = (timestamp) => {
+        const milliseconds = timestamp * 1000;
+        const dateObject = new Date(milliseconds);
+        return (`${dateObject.toLocaleDateString()} ${dateObject.toLocaleTimeString()}`);
+    }
+
+    const convertToLocaleDate = (dateString) => {
+        const dateObject = new Date(dateString);
+        return (`${dateObject.toLocaleDateString()}`);
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             {isLoading ? <ActivityIndicator style={styles.activityIndicator} size="large" color="#8497FF"/> : (
@@ -99,7 +107,7 @@ export default function Worker({route}) {
                                     <Text style={styles.infoText}> {workerData.position}</Text>
                                 </Text>
                                 <Text style={styles.text}>Дата рождения:
-                                    <Text style={styles.infoText}> {workerData.date_of_birth}</Text>
+                                    <Text style={styles.infoText}> {convertToLocaleDate(workerData.date_of_birth)}</Text>
                                 </Text>
                                 <Text style={styles.text}>Статус:
                                     {workerData.blocked ? (
@@ -117,7 +125,8 @@ export default function Worker({route}) {
                                         <Text style={styles.infoText}> {workerData.on_object}</Text>
                                     </Text>
                                     <Text style={styles.text}>Время входа:
-                                        <Text style={styles.infoText}> {workerData.on_object_at}</Text>
+                                        {/*<Text style={styles.infoText}> {workerData.on_object_at}</Text>*/}
+                                        <Text style={styles.infoText}> {convertTimestampToDate(workerData.on_object_at)}</Text>
                                     </Text>
                                 </>
                                 }
@@ -189,13 +198,13 @@ export default function Worker({route}) {
                             style={styles.buttonAllow}
                             onPress={() => setEntryModalOpen(true)}
                         >
-                            <Text style={styles.buttonText}>Одобрить</Text>
+                            <Text style={styles.buttonText}>Допустить</Text>
                         </Pressable>
                         <Pressable
                             style={styles.buttonDeny}
                             onPress={() => handleExit(workerData.id)}
                         >
-                            <Text style={styles.buttonText}>Отклонить</Text>
+                            <Text style={styles.buttonText}>Закрыть допуск</Text>
                         </Pressable>
                     </View>
                 </>)}
@@ -234,7 +243,7 @@ const styles = StyleSheet.create({
     infoText: {
         fontSize: 16,
         color: "#454545",
-        fontWeight: "bold",
+        // fontWeight: "bold",
     },
     infoBlock: {
         // backgroundColor: "white",
@@ -248,7 +257,8 @@ const styles = StyleSheet.create({
         marginVertical: 5
     },
     penaltyNumber: {
-        fontWeight: "bold"
+        color: "#454545",
+        // fontWeight: "bold"
     },
     buttonBlock: {
         backgroundColor: "white",
@@ -271,7 +281,7 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         alignItems: "center",
         justifyContent: "center",
-        paddingHorizontal: 45,
+        paddingHorizontal: 40,
         marginTop: 20,
     },
     buttonDeny: {
@@ -280,7 +290,7 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         alignItems: "center",
         justifyContent: "center",
-        paddingHorizontal: 45,
+        paddingHorizontal: 35,
         marginTop: 20,
     },
     buttonText: {
