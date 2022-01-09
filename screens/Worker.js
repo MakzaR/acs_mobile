@@ -140,6 +140,7 @@ export default function Worker({route}) {
                                 (<FlatList horizontal
                                            data={workerData.accesses}
                                            renderItem={({item}) => (<Access item={item}/>)}
+                                           keyExtractor={item => item.key = Math.random().toString()}
                                 />)
                             }
                         </View>
@@ -171,7 +172,9 @@ export default function Worker({route}) {
                                         <Text style={styles.penaltyNumber}> {workerData.penalties.length}</Text>
                                     </Text>
                                     <FlatList horizontal data={workerData.penalties}
-                                              renderItem={({item}) => (<Penalty item={item}/>)}/>
+                                              renderItem={({item}) => (<Penalty item={item}/>)}
+                                              keyExtractor={item => item.key = Math.random().toString()}
+                                    />
                                 </>)
                             }
                             <Pressable onPress={() => setPenaltyModalOpen(true)}>

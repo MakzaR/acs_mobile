@@ -35,6 +35,7 @@ export default function QR({navigation}) {
                 style={[StyleSheet.absoluteFillObject, styles.container]}
                 barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
             />}
+            <Text style={styles.text}>Отсканируйте QR сотрудника</Text>
         </View>
     );
 }
@@ -43,7 +44,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'black'
+        justifyContent: 'flex-start',
+        backgroundColor: 'black',
+    },
+    text: {
+        color: 'white',
+        paddingTop: "25%",
+        fontSize: 16,
+        fontWeight: 'bold'
     }
 });
