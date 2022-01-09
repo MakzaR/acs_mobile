@@ -40,6 +40,10 @@ export default function Worker({route}) {
     const [penaltyModalOpen, setPenaltyModalOpen] = useState(false)
     const [entryModalOpen, setEntryModalOpen] = useState(false)
 
+    const closeEntryModal = () => {
+        setEntryModalOpen(false)
+    }
+
     const [isLoading, setLoading] = useState(true);
     const [workerData, setWorkerData] = useState({});
     const [maxPenaltiesSum, setMaxPenaltiesSum] = useState({});
@@ -79,11 +83,25 @@ export default function Worker({route}) {
                                     <Text style={styles.infoText}> {workerData.date_of_birth}</Text>
                                 </Text>
                                 <Text style={styles.text}>Статус:
-                                    {workerData.on_object == null ? (
-                                        <Text style={styles.infoText}> Не на объекте</Text>) : (
-                                        <Text style={styles.infoText}> workerData.on_object</Text>
+                                    {workerData.blocked ? (
+                                        <Text style={styles.infoText}> Не может быть допущен</Text>) : (
+                                        <>
+                                            {workerData.has_entered ? (
+                                                <Text style={styles.infoText}> На объекте</Text>) : (
+                                                <Text style={styles.infoText}> Не на объекте</Text>)}
+                                        </>
                                     )}
                                 </Text>
+                                {workerData.has_entered &&
+                                <>
+                                    <Text style={styles.text}>Объект:
+                                        <Text style={styles.infoText}> {workerData.on_object}</Text>
+                                    </Text>
+                                    <Text style={styles.text}>Время входа:
+                                        <Text style={styles.infoText}> {workerData.on_object_at}</Text>
+                                    </Text>
+                                </>
+                                }
                             </View>
                         </View>
 
@@ -141,7 +159,7 @@ export default function Worker({route}) {
                                         size={24}
                                         onPress={() => setEntryModalOpen(false)}
                                     />
-                                    <EntryForm/>
+                                    <EntryForm workerId={workerData.id} closeModal={closeEntryModal} />
                                 </View>
                             </TouchableWithoutFeedback>
                         </Modal>

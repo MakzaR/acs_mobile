@@ -4,10 +4,34 @@ import {Picker} from '@react-native-picker/picker';
 
 const API_URL = 'http://45.144.64.103:81';
 
-export default function EntryForm() {
+export default function EntryForm({workerId, closeModal}) {
     const [objectsOfWork, setObjectsOfWork] = useState([]);
 
     const [selectedObject, setSelectedObject] = useState();
+
+    async function handleEntry(objectOfWork, workerId) {
+        const data = {object_of_work: objectOfWork, worker_id: workerId}
+
+        const postConfig = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+
+        const response = await fetch(API_URL + '/api/entry_control/enter', postConfig);
+
+        if (!response.ok) {
+            const details = await response.json();
+            alert(`${details.error}`);
+            // throw new Error(details.detail);
+            // return response;
+            return response;
+        }
+
+        closeModal();
+    }
 
     const getObjectsOfWork = async () => {
         const response = await fetch(API_URL + '/api/objects_of_work/');
@@ -40,7 +64,7 @@ export default function EntryForm() {
                     {renderObjectList()}
                 </Picker>
             </View>
-            <Pressable style={styles.button}>
+            <Pressable style={styles.button} onPress={() => handleEntry(selectedObject, workerId)}>
                 <Text style={styles.buttonText}>Одобрить</Text>
             </Pressable>
         </View>
